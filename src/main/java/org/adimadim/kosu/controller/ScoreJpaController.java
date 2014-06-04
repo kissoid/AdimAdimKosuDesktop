@@ -10,13 +10,13 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.adimadim.kosu.controller.exceptions.NonexistentEntityException;
 import org.adimadim.kosu.entity.Race;
-import org.adimadim.kosu.entity.Score;
+import org.adimadim.kosu.entity.RaceScore;
 
 /**
  *
@@ -33,19 +33,19 @@ public class ScoreJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Score score) {
+    public void create(RaceScore raceScore) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Race raceId = score.getRaceId();
+            Race raceId = raceScore.getRace();
             if (raceId != null) {
                 raceId = em.getReference(raceId.getClass(), raceId.getRaceId());
-                score.setRaceId(raceId);
+                raceScore.setRace(raceId);
             }
-            em.persist(score);
+            em.persist(raceScore);
             if (raceId != null) {
-                raceId.getScoreList().add(score);
+                raceId.getRaceScoreList().add(raceScore);
                 raceId = em.merge(raceId);
             }
             em.getTransaction().commit();
@@ -56,32 +56,32 @@ public class ScoreJpaController implements Serializable {
         }
     }
 
-    public void edit(Score score) throws NonexistentEntityException, Exception {
+    public void edit(RaceScore raceScore) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Score persistentScore = em.find(Score.class, score.getScoreId());
-            Race raceIdOld = persistentScore.getRaceId();
-            Race raceIdNew = score.getRaceId();
+            RaceScore persistentScore = em.find(RaceScore.class, raceScore.getRaceScoreId());
+            Race raceIdOld = persistentScore.getRace();
+            Race raceIdNew = raceScore.getRace();
             if (raceIdNew != null) {
                 raceIdNew = em.getReference(raceIdNew.getClass(), raceIdNew.getRaceId());
-                score.setRaceId(raceIdNew);
+                raceScore.setRace(raceIdNew);
             }
-            score = em.merge(score);
+            raceScore = em.merge(raceScore);
             if (raceIdOld != null && !raceIdOld.equals(raceIdNew)) {
-                raceIdOld.getScoreList().remove(score);
+                raceIdOld.getRaceScoreList().remove(raceScore);
                 raceIdOld = em.merge(raceIdOld);
             }
             if (raceIdNew != null && !raceIdNew.equals(raceIdOld)) {
-                raceIdNew.getScoreList().add(score);
+                raceIdNew.getRaceScoreList().add(raceScore);
                 raceIdNew = em.merge(raceIdNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = score.getScoreId();
+                Integer id = raceScore.getRaceScoreId();
                 if (findScore(id) == null) {
                     throw new NonexistentEntityException("The score with id " + id + " no longer exists.");
                 }
@@ -99,19 +99,18 @@ public class ScoreJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Score score;
+            RaceScore raceScore;
             try {
-                score = em.getReference(Score.class, id);
-                score.getScoreId();
+                raceScore = em.getReference(RaceScore.class, id);
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The score with id " + id + " no longer exists.", enfe);
             }
-            Race raceId = score.getRaceId();
-            if (raceId != null) {
-                raceId.getScoreList().remove(score);
-                raceId = em.merge(raceId);
+            Race race = raceScore.getRace();
+            if (race != null) {
+                race.getRaceScoreList().remove(raceScore);
+                race = em.merge(race);
             }
-            em.remove(score);
+            em.remove(raceScore);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -120,19 +119,19 @@ public class ScoreJpaController implements Serializable {
         }
     }
 
-    public List<Score> findScoreEntities() {
+    public List<RaceScore> findScoreEntities() {
         return findScoreEntities(true, -1, -1);
     }
 
-    public List<Score> findScoreEntities(int maxResults, int firstResult) {
+    public List<RaceScore> findScoreEntities(int maxResults, int firstResult) {
         return findScoreEntities(false, maxResults, firstResult);
     }
 
-    private List<Score> findScoreEntities(boolean all, int maxResults, int firstResult) {
+    private List<RaceScore> findScoreEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Score.class));
+            cq.select(cq.from(RaceScore.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -144,10 +143,10 @@ public class ScoreJpaController implements Serializable {
         }
     }
 
-    public Score findScore(Integer id) {
+    public RaceScore findScore(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Score.class, id);
+            return em.find(RaceScore.class, id);
         } finally {
             em.close();
         }
@@ -157,7 +156,7 @@ public class ScoreJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Score> rt = cq.from(Score.class);
+            Root<RaceScore> rt = cq.from(RaceScore.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

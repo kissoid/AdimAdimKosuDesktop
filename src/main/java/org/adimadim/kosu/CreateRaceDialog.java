@@ -204,7 +204,6 @@ public class CreateRaceDialog extends javax.swing.JDialog {
     private void createRace()  {
         try {
             Race race = new Race();
-            race.setComment(jTextField1.getText().trim());
             race.setRaceDate(getDate());
             RaceService raceService = new RaceService();
             raceService.saveRace(race);

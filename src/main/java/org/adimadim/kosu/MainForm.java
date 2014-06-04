@@ -12,8 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import org.adimadim.kosu.entity.AccountClient;
-import org.adimadim.kosu.entity.AccountServer;
+import org.adimadim.kosu.entity.Account;
 import org.adimadim.kosu.entity.Race;
 import org.adimadim.kosu.service.RaceService;
 import org.apache.commons.beanutils.BeanUtils;
@@ -282,22 +281,17 @@ public class MainForm extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         RaceService raceService = new RaceService();
-        List<AccountClient> accountClientList = raceService.retrieveAllAccountsFromClient();
-        for (AccountClient accountClient : accountClientList) {
-            System.out.println(accountClient.getName() + " " + accountClient.getSurname());
+        List<Account> accountList = raceService.retrieveAllAccounts();
+        for (Account account : accountList) {
+            System.out.println(account.getName() + " " + account.getSurname());
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
-            List<AccountClient> accountClientList = new ArrayList<AccountClient>();
-            List<AccountServer> accountServerList = raceService.retrieveAllAccountsFromServer();
-            for (AccountServer accountServer : accountServerList) {
-                AccountClient accountClient = new AccountClient();
-                BeanUtils.copyProperties(accountClient, accountServer);
-                accountClientList.add(accountClient);
-            }
-            raceService.saveAccountClientlist(accountClientList);
+            List<Account> accountClientList = new ArrayList<Account>();
+           
+            raceService.saveAccountList(accountClientList);
         } catch (Exception ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -320,13 +314,13 @@ public class MainForm extends javax.swing.JFrame {
                 return;
             }
             Integer chestNumber = Integer.valueOf(jTextField1.getText().trim());
-            AccountClient accountClient = raceService.retrieveAccountFromClientByChestNumber(chestNumber);
-            if (accountClient == null) {
+            Account account = raceService.retrieveAccountFromClientByChestNumber(chestNumber);
+            if (account == null) {
                 return;
             }
-            jLabel6.setText(accountClient.getName());
-            jLabel7.setText(accountClient.getSurname());
-            jLabel8.setText(accountClient.getGender());
+            jLabel6.setText(account.getName());
+            jLabel7.setText(account.getSurname());
+            jLabel8.setText(account.getGender());
         } catch (Exception ex) {
             jLabel6.setText("");
             jLabel7.setText("");
@@ -345,7 +339,7 @@ public class MainForm extends javax.swing.JFrame {
         model.addElement(null);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
         for (Race race : raceList) {
-            model.addElement(race.getRaceId().toString() + ":" + race.getComment() + " (" + simpleDateFormat.format(race.getRaceDate()) + ")");
+            model.addElement(race.getRaceId().toString() + ":" + " (" + simpleDateFormat.format(race.getRaceDate()) + ")");
         }
     }
 

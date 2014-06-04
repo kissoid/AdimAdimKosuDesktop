@@ -11,12 +11,10 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.adimadim.kosu.controller.AccountClientJpaController;
-import org.adimadim.kosu.controller.AccountServerJpaController;
+import org.adimadim.kosu.controller.AccountJpaController;
 import org.adimadim.kosu.controller.RaceJpaController;
 import org.adimadim.kosu.controller.ScoreJpaController;
-import org.adimadim.kosu.entity.AccountClient;
-import org.adimadim.kosu.entity.AccountServer;
+import org.adimadim.kosu.entity.Account;
 import org.adimadim.kosu.entity.Race;
 
 /**
@@ -50,36 +48,28 @@ public class RaceService {
         return new RaceJpaController(getEmfClient());
     }
     
-    private AccountClientJpaController getAccountClientJpaController(){
-        return new AccountClientJpaController(getEmfClient());
+    private AccountJpaController getAccountJpaController(){
+        return new AccountJpaController(getEmfClient());
     }
 
-    private AccountServerJpaController getAccountServerJpaController(){
-        return new AccountServerJpaController(getEmfServer());
-    }
-    
-    public List<AccountServer> retrieveAllAccountsFromServer(){
-        return getAccountServerJpaController().findAccountServerEntities();
-    }
-
-    public List<AccountClient> retrieveAllAccountsFromClient(){
-        return getAccountClientJpaController().findAccountClientEntities();
+    public List<Account> retrieveAllAccounts(){
+        return getAccountJpaController().findAccountEntities();
     }
 
     public List<Race> retrieveAllRaces(){
         return getRaceJpaController().findRaceEntities();
     }
     
-    public AccountClient retrieveAccountFromClientByChestNumber(Integer chestNumber) throws Exception{
+    public Account retrieveAccountFromClientByChestNumber(Integer chestNumber) throws Exception{
         Map param = new HashMap();
         param.put("chestNumber", chestNumber);
-        return getAccountClientJpaController().findByNamedQuery("Account.findByChestNumber", param, null);
+        return getAccountJpaController().findByNamedQuery("Account.findByChestNumber", param, null);
     }
     
-    public void saveAccountClientlist(List<AccountClient> accountClientList) throws Exception{
-        AccountClientJpaController controller = getAccountClientJpaController();
-        for(AccountClient accountClient: accountClientList){
-            controller.edit(accountClient);
+    public void saveAccountList(List<Account> accountList) throws Exception{
+        AccountJpaController controller = getAccountJpaController();
+        for(Account account: accountList){
+            controller.edit(account);
         }
     }
 

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.adimadim.kosu.controller;
 
 import java.io.Serializable;
@@ -18,15 +17,15 @@ import javax.persistence.LockModeType;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.adimadim.kosu.controller.exceptions.NonexistentEntityException;
-import org.adimadim.kosu.entity.AccountClient;
+import org.adimadim.kosu.entity.Account;
 
 /**
  *
  * @author Adem
  */
-public class AccountClientJpaController implements Serializable {
+public class AccountJpaController implements Serializable {
 
-    public AccountClientJpaController(EntityManagerFactory emf) {
+    public AccountJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -35,12 +34,12 @@ public class AccountClientJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(AccountClient accountClient) {
+    public void create(Account account) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(accountClient);
+            em.persist(account);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -49,19 +48,19 @@ public class AccountClientJpaController implements Serializable {
         }
     }
 
-    public void edit(AccountClient accountClient) throws NonexistentEntityException, Exception {
+    public void edit(Account account) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            accountClient = em.merge(accountClient);
+            account = em.merge(account);
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = accountClient.getAccountId();
-                if (findAccountClient(id) == null) {
-                    throw new NonexistentEntityException("The accountClient with id " + id + " no longer exists.");
+                Integer id = account.getAccountId();
+                if (findAccount(id) == null) {
+                    throw new NonexistentEntityException("The account with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -77,14 +76,14 @@ public class AccountClientJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            AccountClient accountClient;
+            Account account;
             try {
-                accountClient = em.getReference(AccountClient.class, id);
-                accountClient.getAccountId();
+                account = em.getReference(Account.class, id);
+                account.getAccountId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The accountClient with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The account with id " + id + " no longer exists.", enfe);
             }
-            em.remove(accountClient);
+            em.remove(account);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -93,19 +92,19 @@ public class AccountClientJpaController implements Serializable {
         }
     }
 
-    public List<AccountClient> findAccountClientEntities() {
-        return findAccountClientEntities(true, -1, -1);
+    public List<Account> findAccountEntities() {
+        return findAccountEntities(true, -1, -1);
     }
 
-    public List<AccountClient> findAccountClientEntities(int maxResults, int firstResult) {
-        return findAccountClientEntities(false, maxResults, firstResult);
+    public List<Account> findAccountEntities(int maxResults, int firstResult) {
+        return findAccountEntities(false, maxResults, firstResult);
     }
 
-    private List<AccountClient> findAccountClientEntities(boolean all, int maxResults, int firstResult) {
+    private List<Account> findAccountEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(AccountClient.class));
+            cq.select(cq.from(Account.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -117,20 +116,20 @@ public class AccountClientJpaController implements Serializable {
         }
     }
 
-    public AccountClient findAccountClient(Integer id) {
+    public Account findAccount(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(AccountClient.class, id);
+            return em.find(Account.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getAccountClientCount() {
+    public int getAccountCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<AccountClient> rt = cq.from(AccountClient.class);
+            Root<Account> rt = cq.from(Account.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
@@ -138,17 +137,17 @@ public class AccountClientJpaController implements Serializable {
             em.close();
         }
     }
-    
-    public AccountClient findByNamedQuery(String namedQuery, Map parameters, LockModeType lockModeType) throws Exception{
+
+    public Account findByNamedQuery(String namedQuery, Map parameters, LockModeType lockModeType) throws Exception {
         Query q = getEntityManager().createNamedQuery(namedQuery);
         Iterator iterator = parameters.entrySet().iterator();
-        while(iterator.hasNext()){
-            Map.Entry entry = (Map.Entry)iterator.next();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
             q.setParameter(entry.getKey().toString(), entry.getValue());
         }
-        if(lockModeType != null){
+        if (lockModeType != null) {
             q.setLockMode(lockModeType);
         }
-        return (AccountClient)q.getSingleResult();
+        return (Account) q.getSingleResult();
     }
 }

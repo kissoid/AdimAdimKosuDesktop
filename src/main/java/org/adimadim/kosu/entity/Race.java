@@ -13,8 +13,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -27,32 +25,35 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Adem
+ * @author Ergo
  */
 @Entity
-@Table(name="RACE", catalog = "", schema = "")
+@Table(catalog = "adimadim", schema = "")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Race.findAll", query = "SELECT r FROM Race r"),
     @NamedQuery(name = "Race.findByRaceId", query = "SELECT r FROM Race r WHERE r.raceId = :raceId"),
-    @NamedQuery(name = "Race.findByComment", query = "SELECT r FROM Race r WHERE r.comment = :comment"),
-    @NamedQuery(name = "Race.findByRaceDate", query = "SELECT r FROM Race r WHERE r.raceDate = :raceDate")})
+    @NamedQuery(name = "Race.findByRaceName", query = "SELECT r FROM Race r WHERE r.raceName = :raceName"),
+    @NamedQuery(name = "Race.findByRaceDate", query = "SELECT r FROM Race r WHERE r.raceDate = :raceDate"),
+    @NamedQuery(name = "Race.findByActive", query = "SELECT r FROM Race r WHERE r.active = :active")})
 public class Race implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "RACE_ID", nullable = false)
+    @Column(name = "race_id", nullable = false)
     private Integer raceId;
     @Basic(optional = false)
-    @Column(nullable = false, length = 30)
-    private String comment;
+    @Column(name = "race_name", nullable = false, length = 50)
+    private String raceName;
     @Basic(optional = false)
-    @Column(name = "RACE_DATE", nullable = false)
-    @Temporal(TemporalType.DATE)
+    @Column(name = "race_date", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date raceDate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "raceId")
-    private List<Score> scoreList;
+    @Basic(optional = false)
+    @Column(nullable = false, length = 1)
+    private String active;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "race")
+    private List<RaceScore> raceScoreList;
 
     public Race() {
     }
@@ -61,10 +62,11 @@ public class Race implements Serializable {
         this.raceId = raceId;
     }
 
-    public Race(Integer raceId, String comment, Date raceDate) {
+    public Race(Integer raceId, String raceName, Date raceDate, String active) {
         this.raceId = raceId;
-        this.comment = comment;
+        this.raceName = raceName;
         this.raceDate = raceDate;
+        this.active = active;
     }
 
     public Integer getRaceId() {
@@ -75,12 +77,12 @@ public class Race implements Serializable {
         this.raceId = raceId;
     }
 
-    public String getComment() {
-        return comment;
+    public String getRaceName() {
+        return raceName;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setRaceName(String raceName) {
+        this.raceName = raceName;
     }
 
     public Date getRaceDate() {
@@ -91,13 +93,21 @@ public class Race implements Serializable {
         this.raceDate = raceDate;
     }
 
-    @XmlTransient
-    public List<Score> getScoreList() {
-        return scoreList;
+    public String getActive() {
+        return active;
     }
 
-    public void setScoreList(List<Score> scoreList) {
-        this.scoreList = scoreList;
+    public void setActive(String active) {
+        this.active = active;
+    }
+
+    @XmlTransient
+    public List<RaceScore> getRaceScoreList() {
+        return raceScoreList;
+    }
+
+    public void setRaceScoreList(List<RaceScore> raceScoreList) {
+        this.raceScoreList = raceScoreList;
     }
 
     @Override

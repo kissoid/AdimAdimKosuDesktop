@@ -7,18 +7,18 @@
 package org.adimadim.kosu.controller;
 
 import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import org.adimadim.kosu.entity.Score;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.adimadim.kosu.controller.exceptions.IllegalOrphanException;
 import org.adimadim.kosu.controller.exceptions.NonexistentEntityException;
 import org.adimadim.kosu.entity.Race;
+import org.adimadim.kosu.entity.RaceScore;
 
 /**
  *
@@ -36,26 +36,26 @@ public class RaceJpaController implements Serializable {
     }
 
     public void create(Race race) {
-        if (race.getScoreList() == null) {
-            race.setScoreList(new ArrayList<Score>());
+        if (race.getRaceScoreList() == null) {
+            race.setRaceScoreList(new ArrayList<RaceScore>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<Score> attachedScoreList = new ArrayList<Score>();
-            for (Score scoreListScoreToAttach : race.getScoreList()) {
-                scoreListScoreToAttach = em.getReference(scoreListScoreToAttach.getClass(), scoreListScoreToAttach.getScoreId());
+            List<RaceScore> attachedScoreList = new ArrayList<RaceScore>();
+            for (RaceScore scoreListScoreToAttach : race.getRaceScoreList()) {
+                scoreListScoreToAttach = em.getReference(scoreListScoreToAttach.getClass(), scoreListScoreToAttach.getRaceScoreId());
                 attachedScoreList.add(scoreListScoreToAttach);
             }
-            race.setScoreList(attachedScoreList);
+            race.setRaceScoreList(attachedScoreList);
             em.persist(race);
-            for (Score scoreListScore : race.getScoreList()) {
-                Race oldRaceIdOfScoreListScore = scoreListScore.getRaceId();
-                scoreListScore.setRaceId(race);
+            for (RaceScore scoreListScore : race.getRaceScoreList()) {
+                Race oldRaceIdOfScoreListScore = scoreListScore.getRace();
+                scoreListScore.setRace(race);
                 scoreListScore = em.merge(scoreListScore);
                 if (oldRaceIdOfScoreListScore != null) {
-                    oldRaceIdOfScoreListScore.getScoreList().remove(scoreListScore);
+                    oldRaceIdOfScoreListScore.getRaceScoreList().remove(scoreListScore);
                     oldRaceIdOfScoreListScore = em.merge(oldRaceIdOfScoreListScore);
                 }
             }
@@ -73,10 +73,10 @@ public class RaceJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Race persistentRace = em.find(Race.class, race.getRaceId());
-            List<Score> scoreListOld = persistentRace.getScoreList();
-            List<Score> scoreListNew = race.getScoreList();
+            List<RaceScore> scoreListOld = persistentRace.getRaceScoreList();
+            List<RaceScore> scoreListNew = race.getRaceScoreList();
             List<String> illegalOrphanMessages = null;
-            for (Score scoreListOldScore : scoreListOld) {
+            for (RaceScore scoreListOldScore : scoreListOld) {
                 if (!scoreListNew.contains(scoreListOldScore)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
@@ -87,21 +87,21 @@ public class RaceJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            List<Score> attachedScoreListNew = new ArrayList<Score>();
-            for (Score scoreListNewScoreToAttach : scoreListNew) {
-                scoreListNewScoreToAttach = em.getReference(scoreListNewScoreToAttach.getClass(), scoreListNewScoreToAttach.getScoreId());
+            List<RaceScore> attachedScoreListNew = new ArrayList<RaceScore>();
+            for (RaceScore scoreListNewScoreToAttach : scoreListNew) {
+                scoreListNewScoreToAttach = em.getReference(scoreListNewScoreToAttach.getClass(), scoreListNewScoreToAttach.getRaceScoreId());
                 attachedScoreListNew.add(scoreListNewScoreToAttach);
             }
             scoreListNew = attachedScoreListNew;
-            race.setScoreList(scoreListNew);
+            race.setRaceScoreList(scoreListNew);
             race = em.merge(race);
-            for (Score scoreListNewScore : scoreListNew) {
+            for (RaceScore scoreListNewScore : scoreListNew) {
                 if (!scoreListOld.contains(scoreListNewScore)) {
-                    Race oldRaceIdOfScoreListNewScore = scoreListNewScore.getRaceId();
-                    scoreListNewScore.setRaceId(race);
+                    Race oldRaceIdOfScoreListNewScore = scoreListNewScore.getRace();
+                    scoreListNewScore.setRace(race);
                     scoreListNewScore = em.merge(scoreListNewScore);
                     if (oldRaceIdOfScoreListNewScore != null && !oldRaceIdOfScoreListNewScore.equals(race)) {
-                        oldRaceIdOfScoreListNewScore.getScoreList().remove(scoreListNewScore);
+                        oldRaceIdOfScoreListNewScore.getRaceScoreList().remove(scoreListNewScore);
                         oldRaceIdOfScoreListNewScore = em.merge(oldRaceIdOfScoreListNewScore);
                     }
                 }
@@ -136,8 +136,8 @@ public class RaceJpaController implements Serializable {
                 throw new NonexistentEntityException("The race with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<Score> scoreListOrphanCheck = race.getScoreList();
-            for (Score scoreListOrphanCheckScore : scoreListOrphanCheck) {
+            List<RaceScore> scoreListOrphanCheck = race.getRaceScoreList();
+            for (RaceScore scoreListOrphanCheckScore : scoreListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
