@@ -6,21 +6,17 @@
 
 package org.adimadim.kosu.entity;
 
+
+
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -32,64 +28,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "RaceScore.findAll", query = "SELECT r FROM RaceScore r"),
-    @NamedQuery(name = "RaceScore.findByRaceScoreId", query = "SELECT r FROM RaceScore r WHERE r.raceScoreId = :raceScoreId"),
-    @NamedQuery(name = "RaceScore.findByDuration", query = "SELECT r FROM RaceScore r WHERE r.duration = :duration"),
-    @NamedQuery(name = "RaceScore.findByTeamId", query = "SELECT r FROM RaceScore r WHERE r.teamId = :teamId")})
+    @NamedQuery(name = "RaceScore.findByRaceScoreId", query = "SELECT r FROM RaceScore r WHERE r.raceScorePK.raceId = :raceId")})
 public class RaceScore implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "race_score_id", nullable = false)
-    private Integer raceScoreId;
-    @Temporal(TemporalType.TIME)
-    private Date duration;
-    @Column(name = "team_id")
-    private Integer teamId;
-    @JoinColumn(name = "account_id", referencedColumnName = "account_id", nullable = false)
-    @ManyToOne(optional = false)
-    private Account account;
-    @JoinColumn(name = "race_id", referencedColumnName = "race_id", nullable = false)
+    @EmbeddedId
+    protected RaceScorePK raceScorePK;
+    @Column(name = "order_no")
+    private Integer orderNo;
+    @JoinColumn(name = "race_id", referencedColumnName = "race_id")
     @ManyToOne(optional = false)
     private Race race;
+    @JoinColumn(name = "account_id", referencedColumnName = "account_id", nullable = false)
+    @ManyToOne
+    private Account account;
 
     public RaceScore() {
-    }
-
-    public RaceScore(Integer raceScoreId) {
-        this.raceScoreId = raceScoreId;
-    }
-
-    public Integer getRaceScoreId() {
-        return raceScoreId;
-    }
-
-    public void setRaceScoreId(Integer raceScoreId) {
-        this.raceScoreId = raceScoreId;
-    }
-
-    public Date getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Date duration) {
-        this.duration = duration;
-    }
-
-    public Integer getTeamId() {
-        return teamId;
-    }
-
-    public void setTeamId(Integer teamId) {
-        this.teamId = teamId;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
     }
 
     public Race getRace() {
@@ -100,29 +53,28 @@ public class RaceScore implements Serializable {
         this.race = race;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (raceScoreId != null ? raceScoreId.hashCode() : 0);
-        return hash;
+    public Account getAccount() {
+        return account;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof RaceScore)) {
-            return false;
-        }
-        RaceScore other = (RaceScore) object;
-        if ((this.raceScoreId == null && other.raceScoreId != null) || (this.raceScoreId != null && !this.raceScoreId.equals(other.raceScoreId))) {
-            return false;
-        }
-        return true;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
-    @Override
-    public String toString() {
-        return "org.adimadim.kosu.entity.RaceScore[ raceScoreId=" + raceScoreId + " ]";
+    public Integer getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(Integer orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public RaceScorePK getRaceScorePK() {
+        return raceScorePK;
+    }
+
+    public void setRaceScorePK(RaceScorePK raceScorePK) {
+        this.raceScorePK = raceScorePK;
     }
     
 }

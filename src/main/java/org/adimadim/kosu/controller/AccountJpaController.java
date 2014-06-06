@@ -18,6 +18,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.adimadim.kosu.controller.exceptions.NonexistentEntityException;
 import org.adimadim.kosu.entity.Account;
+import org.adimadim.kosu.entity.RaceScore;
 
 /**
  *
@@ -48,7 +49,7 @@ public class AccountJpaController implements Serializable {
         }
     }
 
-    public void edit(Account account) throws NonexistentEntityException, Exception {
+    public void update(Account account) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -71,7 +72,7 @@ public class AccountJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void delete(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -149,5 +150,17 @@ public class AccountJpaController implements Serializable {
             q.setLockMode(lockModeType);
         }
         return (Account) q.getSingleResult();
+    }
+    
+    public List<RaceScore> findListByQuery(String namedQuery, Map parameters) throws Exception {
+        EntityManager em = getEntityManager();
+        Query q = em.createQuery(namedQuery);
+        Iterator iterator = parameters.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            q.setParameter(entry.getKey().toString(), entry.getValue());
+        }
+
+        return (List<RaceScore>) q.getResultList();
     }
 }

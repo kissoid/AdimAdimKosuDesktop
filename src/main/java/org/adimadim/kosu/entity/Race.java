@@ -52,7 +52,7 @@ public class Race implements Serializable {
     @Basic(optional = false)
     @Column(nullable = false, length = 1)
     private String active;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "race")
+    @OneToMany(mappedBy = "race")
     private List<RaceScore> raceScoreList;
 
     public Race() {

@@ -3,14 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.adimadim.kosu.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,13 +15,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -49,10 +43,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Account.findByAdimadimRun", query = "SELECT a FROM Account a WHERE a.adimadimRun = :adimadimRun"),
     @NamedQuery(name = "Account.findByPhoneNumber", query = "SELECT a FROM Account a WHERE a.phoneNumber = :phoneNumber"),
     @NamedQuery(name = "Account.findByPicture", query = "SELECT a FROM Account a WHERE a.picture = :picture"),
-    @NamedQuery(name = "Account.findByChestNumber1", query = "SELECT a FROM Account a WHERE a.chestNumber1 = :chestNumber1"),
+    @NamedQuery(name = "Account.findByChestNumber1", query = "SELECT a FROM Account a WHERE a.chestNumber = :chestNumber"),
     @NamedQuery(name = "Account.findBySecretKey", query = "SELECT a FROM Account a WHERE a.secretKey = :secretKey"),
-    @NamedQuery(name = "Account.findByUserName", query = "SELECT a FROM Account a WHERE a.userName = :userName")})
+    @NamedQuery(name = "Account.findByUserName", query = "SELECT a FROM Account a WHERE a.userName = :userName"),
+    @NamedQuery(name = "Account.findByChestNumber", query = "SELECT a FROM Account a WHERE a.chestNumber = :chestNumber")})
 public class Account implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -97,7 +93,7 @@ public class Account implements Serializable {
     @Column(length = 30)
     private String picture;
     @Column(name = "chest_number")
-    private Integer chestNumber1;
+    private Integer chestNumber;
     @Column(name = "secret_key", length = 50)
     private String secretKey;
     @Column(name = "user_name", length = 50)
@@ -222,12 +218,12 @@ public class Account implements Serializable {
         this.picture = picture;
     }
 
-    public Integer getChestNumber1() {
-        return chestNumber1;
+    public Integer getChestNumber() {
+        return chestNumber;
     }
 
-    public void setChestNumber1(Integer chestNumber1) {
-        this.chestNumber1 = chestNumber1;
+    public void setChestNumber(Integer chestNumber) {
+        this.chestNumber = chestNumber;
     }
 
     public String getSecretKey() {
@@ -247,28 +243,8 @@ public class Account implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (accountId != null ? accountId.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Account)) {
-            return false;
-        }
-        Account other = (Account) object;
-        if ((this.accountId == null && other.accountId != null) || (this.accountId != null && !this.accountId.equals(other.accountId))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public String toString() {
         return "org.adimadim.kosu.entity.Account[ accountId=" + accountId + " ]";
     }
-    
+
 }
