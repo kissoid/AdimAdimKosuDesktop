@@ -628,18 +628,20 @@ public class MainForm extends javax.swing.JFrame {
         XSSFSheet sheet = workbook.createSheet("Sonuclar");
         XSSFRow row = sheet.createRow(0);
         row.createCell(0).setCellValue("Id");
-        row.createCell(1).setCellValue("Ad");
-        row.createCell(2).setCellValue("Soyad");
-        row.createCell(3).setCellValue("Cinsiyet");
-        row.createCell(4).setCellValue("Sıra");
+        row.createCell(1).setCellValue("Göğüs No");
+        row.createCell(2).setCellValue("Ad");
+        row.createCell(3).setCellValue("Soyad");
+        row.createCell(4).setCellValue("Cinsiyet");
+        row.createCell(5).setCellValue("Sıra");
         int i = 1;
         for (RaceScore raceScore : raceScoreList) {
             XSSFRow tempRow = sheet.createRow(i);
             tempRow.createCell(0).setCellValue(raceScore.getAccount().getAccountId());
-            tempRow.createCell(1).setCellValue(raceScore.getAccount().getName());
-            tempRow.createCell(2).setCellValue(raceScore.getAccount().getSurname());
-            tempRow.createCell(3).setCellValue(raceScore.getAccount().getGender());
-            tempRow.createCell(4).setCellValue(raceScore.getOrderNo());
+            tempRow.createCell(1).setCellValue(raceScore.getAccount().getChestNumber());
+            tempRow.createCell(2).setCellValue(raceScore.getAccount().getName());
+            tempRow.createCell(3).setCellValue(raceScore.getAccount().getSurname());
+            tempRow.createCell(4).setCellValue(raceScore.getAccount().getGender());
+            tempRow.createCell(5).setCellValue(raceScore.getOrderNo());
             i++;
         }
         String fileName = "sonuclar.xlsx";
