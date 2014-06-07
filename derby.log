@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Sat Jun 07 14:24:56 EEST 2014:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.1 - (1458268): instance a816c00e-0146-7613-0507-000002e29600 
-on database directory C:\Users\Ergo\Documents\NetBeansProjects\AdimAdimKosuDesktop\AdimAdimKosuDB with class loader sun.misc.Launcher$AppClassLoader@631d75b9 
+Sat Jun 07 14:31:06 EEST 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.1 - (1458268): instance a816c00e-0146-7618-abaf-0000029de2f8 
+on database directory C:\Users\Ergo\Documents\NetBeansProjects\AdimAdimKosuDesktop\AdimAdimKosuDB with class loader sun.misc.Launcher$AppClassLoader@231bf785 
 Loaded from file:/C:/Users/Ergo/.m2/repository/org/apache/derby/derby/10.10.1.1/derby-10.10.1.1.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.7.0_51-b13
