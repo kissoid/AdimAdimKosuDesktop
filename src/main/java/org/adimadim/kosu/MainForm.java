@@ -421,7 +421,23 @@ public class MainForm extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         try {
-            loadAccountsFromServer();
+            boolean devam = true;
+            int begin = 0;
+            int end = 100;
+            int total = 0;
+            while (devam) {
+                ClientService port = service.getClientServicePort();
+                List<org.adimadim.kosu.ws.Account> wsAccountList = port.retrieveAccounts(begin, end);
+                if (wsAccountList != null && wsAccountList.size() > 0) {
+                    loadAccountsFromServer(wsAccountList);
+                    begin = end;
+                    end += 100;
+                    total += wsAccountList.size();
+                } else {
+                    devam = false;
+                }
+            }
+            JOptionPane.showMessageDialog(this, "İşlem tamamlandı. " + total + " kayıt yüklendi", "Hata", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
         }
@@ -527,9 +543,7 @@ public class MainForm extends javax.swing.JFrame {
         retrieveRaceScores();
     }
 
-    private void loadAccountsFromServer() throws Exception {
-        ClientService port = service.getClientServicePort();
-        List<org.adimadim.kosu.ws.Account> wsAccountList = port.retrieveAccounts();
+    private void loadAccountsFromServer(List<org.adimadim.kosu.ws.Account> wsAccountList) throws Exception {
         List<org.adimadim.kosu.entity.Account> entityAccountList = new ArrayList<>();
         for (org.adimadim.kosu.ws.Account wsAccount : wsAccountList) {
             org.adimadim.kosu.entity.Account entityAccount = new org.adimadim.kosu.entity.Account();
@@ -551,7 +565,6 @@ public class MainForm extends javax.swing.JFrame {
             entityAccountList.add(entityAccount);
         }
         raceService.saveAccountList(entityAccountList);
-        JOptionPane.showMessageDialog(this, "İşlem tamamlandı. " + entityAccountList.size() + " kayıt yüklendi", "Hata", JOptionPane.ERROR_MESSAGE);
     }
 
     private void loadRacesFromServer() throws Exception {
@@ -618,7 +631,7 @@ public class MainForm extends javax.swing.JFrame {
         row.createCell(1).setCellValue("Ad");
         row.createCell(2).setCellValue("Soyad");
         row.createCell(3).setCellValue("Cinsiyet");
-        row.createCell(2).setCellValue("Sıra");
+        row.createCell(4).setCellValue("Sıra");
         int i = 1;
         for (RaceScore raceScore : raceScoreList) {
             XSSFRow tempRow = sheet.createRow(i);
@@ -626,7 +639,7 @@ public class MainForm extends javax.swing.JFrame {
             tempRow.createCell(1).setCellValue(raceScore.getAccount().getName());
             tempRow.createCell(2).setCellValue(raceScore.getAccount().getSurname());
             tempRow.createCell(3).setCellValue(raceScore.getAccount().getGender());
-            tempRow.createCell(2).setCellValue(raceScore.getOrderNo());
+            tempRow.createCell(4).setCellValue(raceScore.getOrderNo());
             i++;
         }
         String fileName = "sonuclar.xlsx";

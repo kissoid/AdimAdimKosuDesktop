@@ -138,7 +138,7 @@ public class AccountJpaController implements Serializable {
             em.close();
         }
     }
-
+    
     public Account findByNamedQuery(String namedQuery, Map parameters, LockModeType lockModeType) throws Exception {
         Query q = getEntityManager().createNamedQuery(namedQuery);
         Iterator iterator = parameters.entrySet().iterator();
@@ -162,5 +162,13 @@ public class AccountJpaController implements Serializable {
         }
 
         return (List<RaceScore>) q.getResultList();
+    }
+    
+    public void executeQuery(String query, Map parameters) throws Exception {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        Query q = em.createQuery(query);
+        q.executeUpdate();
+        em.getTransaction().commit();
     }
 }

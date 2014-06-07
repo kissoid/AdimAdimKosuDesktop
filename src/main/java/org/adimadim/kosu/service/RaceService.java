@@ -88,6 +88,11 @@ public class RaceService {
         }
     }
 
+    public void deleteAll() throws Exception{
+        AccountJpaController controller = getAccountJpaController();
+        controller.executeQuery("delete from Account a", null);
+    }
+    
     public void saveRaceScore(RaceScore raceScore) throws Exception {
         RaceScoreJpaController controller = getRaceScoreJpaController();
         Map map = new HashMap();
