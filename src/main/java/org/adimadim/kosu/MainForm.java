@@ -424,20 +424,23 @@ public class MainForm extends javax.swing.JFrame {
             boolean devam = true;
             int begin = 0;
             int end = 100;
-            int total = 0;
             while (devam) {
                 ClientService port = service.getClientServicePort();
                 List<org.adimadim.kosu.ws.Account> wsAccountList = port.retrieveAccounts(begin, end);
                 if (wsAccountList != null && wsAccountList.size() > 0) {
                     loadAccountsFromServer(wsAccountList);
-                    begin = end;
-                    end += 100;
-                    total += wsAccountList.size();
+                    if (begin > 150) {
+                        begin = end - 5;
+                        end = begin + 100;
+                    } else{
+                        begin = end;
+                        end = begin + 100;
+                    }
                 } else {
                     devam = false;
                 }
             }
-            JOptionPane.showMessageDialog(this, "İşlem tamamlandı. " + total + " kayıt yüklendi", "Hata", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "İşlem tamamlandı. ", "Hata", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
         }
