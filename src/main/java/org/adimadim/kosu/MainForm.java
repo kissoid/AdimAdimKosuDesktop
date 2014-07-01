@@ -386,7 +386,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
-            loadRacesFromServer();
+            saveRaces();
             retrieveRaces();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
@@ -420,22 +420,19 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        loadAccountsFromServer();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void loadAccountsFromServer(){
         try {
             boolean devam = true;
-            int begin = 0;
-            int end = 100;
+            Integer startAccountId = 0;
+            Integer count = 100;
             while (devam) {
                 ClientService port = service.getClientServicePort();
-                List<org.adimadim.kosu.ws.Account> wsAccountList = port.retrieveAccounts(begin, end);
+                List<org.adimadim.kosu.ws.Account> wsAccountList = port.retrieveAccounts(startAccountId, count);
                 if (wsAccountList != null && wsAccountList.size() > 0) {
-                    loadAccountsFromServer(wsAccountList);
-                    if (begin > 150) {
-                        begin = end - 5;
-                        end = begin + 100;
-                    } else{
-                        begin = end;
-                        end = begin + 100;
-                    }
+                    startAccountId = saveAccounts(wsAccountList);
                 } else {
                     devam = false;
                 }
@@ -443,9 +440,9 @@ public class MainForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "İşlem tamamlandı. ", "Hata", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_jButton4ActionPerformed
-
+        }        
+    }
+    
     private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
         retrieveAccount();
     }//GEN-LAST:event_jTextField1FocusLost
@@ -546,9 +543,11 @@ public class MainForm extends javax.swing.JFrame {
         retrieveRaceScores();
     }
 
-    private void loadAccountsFromServer(List<org.adimadim.kosu.ws.Account> wsAccountList) throws Exception {
+    private Integer saveAccounts(List<org.adimadim.kosu.ws.Account> wsAccountList) throws Exception {
+        Integer lastAccountId = 0;
         List<org.adimadim.kosu.entity.Account> entityAccountList = new ArrayList<>();
         for (org.adimadim.kosu.ws.Account wsAccount : wsAccountList) {
+            lastAccountId = wsAccount.getAccountId();
             org.adimadim.kosu.entity.Account entityAccount = new org.adimadim.kosu.entity.Account();
             entityAccount.setAccountId(wsAccount.getAccountId());
             entityAccount.setName(wsAccount.getName());
@@ -568,9 +567,10 @@ public class MainForm extends javax.swing.JFrame {
             entityAccountList.add(entityAccount);
         }
         raceService.saveAccountList(entityAccountList);
+        return lastAccountId;
     }
 
-    private void loadRacesFromServer() throws Exception {
+    private void saveRaces() throws Exception {
         ClientService port = service.getClientServicePort();
         List<org.adimadim.kosu.ws.Race> wsRaceList = port.retrieveRaces();
         List<org.adimadim.kosu.entity.Race> entityRaceList = new ArrayList<>();
@@ -648,10 +648,9 @@ public class MainForm extends javax.swing.JFrame {
             i++;
         }
         String fileName = "sonuclar.xlsx";
-        //lets write to file
-        FileOutputStream fos = new FileOutputStream(fileName);
-        workbook.write(fos);
-        fos.close();
+        try (FileOutputStream fos = new FileOutputStream(fileName)) {
+            workbook.write(fos);
+        }
         System.out.println(fileName + " written successfully");
 
     }
