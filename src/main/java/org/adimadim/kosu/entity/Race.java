@@ -19,8 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -31,7 +29,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(catalog = "adimadim", schema = "")
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 @NamedQueries({
     @NamedQuery(name = "Race.findAll", query = "SELECT r FROM Race r"),
     @NamedQuery(name = "Race.findByRaceId", query = "SELECT r FROM Race r WHERE r.raceId = :raceId"),
@@ -103,6 +100,7 @@ public class Race implements Serializable {
         this.active = active;
     }
 
+    @XmlTransient
     public List<RaceScore> getRaceScoreList() {
         return raceScoreList;
     }
