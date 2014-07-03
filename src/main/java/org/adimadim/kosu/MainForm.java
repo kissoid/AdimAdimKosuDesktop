@@ -7,17 +7,22 @@ package org.adimadim.kosu;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import org.adimadim.kosu.entity.Account;
 import org.adimadim.kosu.entity.Race;
 import org.adimadim.kosu.entity.RaceScore;
 import org.adimadim.kosu.entity.RaceScorePK;
 import org.adimadim.kosu.service.RaceService;
-import org.adimadim.kosu.ws.ClientService;
-import org.adimadim.kosu.ws.ClientServiceService;
+import org.adimadim.kosu.ws.ClientExportImport;
+import org.adimadim.kosu.ws.ClientExportImportService;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -28,7 +33,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class MainForm extends javax.swing.JFrame {
 
-    private ClientServiceService service;
+    private ClientExportImportService service;
     private RaceService raceService;
     private Race selectedRace;
     private Account selectedAccount;
@@ -37,7 +42,7 @@ public class MainForm extends javax.swing.JFrame {
      * Creates new form MainForm
      */
     public MainForm() {
-        service = new ClientServiceService();
+        service = new ClientExportImportService();
         raceService = new RaceService();
         initComponents();
     }
@@ -60,6 +65,8 @@ public class MainForm extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton4 = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        jButton8 = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -143,6 +150,18 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(jButton4);
+        jToolBar1.add(jSeparator3);
+
+        jButton8.setText("Yarış Sonuçlarını Sunucuya Gönder");
+        jButton8.setFocusable(false);
+        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton8);
 
         jPanel1.add(jToolBar1, java.awt.BorderLayout.NORTH);
 
@@ -423,13 +442,13 @@ public class MainForm extends javax.swing.JFrame {
         loadAccountsFromServer();
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void loadAccountsFromServer(){
+    private void loadAccountsFromServer() {
         try {
             boolean devam = true;
             Integer startAccountId = 0;
             Integer count = 100;
             while (devam) {
-                ClientService port = service.getClientServicePort();
+                ClientExportImport port = service.getClientExportImportPort();
                 List<org.adimadim.kosu.ws.Account> wsAccountList = port.retrieveAccounts(startAccountId, count);
                 if (wsAccountList != null && wsAccountList.size() > 0) {
                     startAccountId = saveAccounts(wsAccountList);
@@ -440,9 +459,25 @@ public class MainForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "İşlem tamamlandı. ", "Hata", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
-        }        
+        }
     }
-    
+
+    private void sendRaceScoresToServer() {
+        if (selectedRace == null) {
+            JOptionPane.showMessageDialog(this, "Lütfen sonuçlarını göndermek istediğiniz yarışı seçiniz", "Hata", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            ClientExportImport port = service.getClientExportImportPort();
+            List<org.adimadim.kosu.ws.RaceScoreDto> wsRaceScores = prepareAndRetrieveRaceScores();
+            String result = port.saveRaceScores(wsRaceScores);
+            JOptionPane.showMessageDialog(this, result, "Hata", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
         retrieveAccount();
     }//GEN-LAST:event_jTextField1FocusLost
@@ -482,6 +517,10 @@ public class MainForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        sendRaceScoresToServer();
+    }//GEN-LAST:event_jButton8ActionPerformed
 
     private void clearInputs() {
         jTextField1.setText("");
@@ -569,9 +608,9 @@ public class MainForm extends javax.swing.JFrame {
         raceService.saveAccountList(entityAccountList);
         return lastAccountId;
     }
-
+    
     private void saveRaces() throws Exception {
-        ClientService port = service.getClientServicePort();
+        ClientExportImport port = service.getClientExportImportPort();
         List<org.adimadim.kosu.ws.Race> wsRaceList = port.retrieveRaces();
         List<org.adimadim.kosu.entity.Race> entityRaceList = new ArrayList<>();
         for (org.adimadim.kosu.ws.Race wsRace : wsRaceList) {
@@ -599,6 +638,56 @@ public class MainForm extends javax.swing.JFrame {
         }
         List<RaceScore> raceScoreList = raceService.retrieveRaceScoresByRaceId(selectedRace.getRaceId());
         jTable2.setModel(convertRaceScoreListToTableModel(raceScoreList));
+    }
+
+    private List<org.adimadim.kosu.ws.RaceScoreDto> prepareAndRetrieveRaceScores() throws Exception {
+        if (selectedRace == null) {
+            JOptionPane.showMessageDialog(this, "Lütfen önce bir yarış seçiniz", "Bilgi", JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+        List<org.adimadim.kosu.entity.RaceScore> raceScoreList = raceService.retrieveRaceScoresByRaceId(selectedRace.getRaceId());
+        List<org.adimadim.kosu.ws.RaceScoreDto> wsRaceScoreList = new ArrayList<org.adimadim.kosu.ws.RaceScoreDto>();
+
+        for (org.adimadim.kosu.entity.RaceScore tempRaceScore : raceScoreList) {
+            org.adimadim.kosu.ws.RaceScoreDto tempWsRaceScore = new org.adimadim.kosu.ws.RaceScoreDto();
+
+            /*org.adimadim.kosu.ws.Race tempWsRace = new org.adimadim.kosu.ws.Race();
+            tempWsRace.setRaceId(tempRaceScore.getRace().getRaceId());
+            tempWsRace.setActive(tempRaceScore.getRace().getActive());
+            tempWsRace.setRaceName(tempRaceScore.getRace().getRaceName());
+            tempWsRace.setRaceDate(dateToXmlGregorianCalendar(tempRaceScore.getRace().getRaceDate()));*/
+            tempWsRaceScore.setRaceId(tempRaceScore.getRace().getRaceId());
+            
+            /*org.adimadim.kosu.ws.Account tempWsAccount = new org.adimadim.kosu.ws.Account();
+            tempWsAccount.setAccountId(tempRaceScore.getAccount().getAccountId());
+            tempWsAccount.setName(tempRaceScore.getAccount().getName());
+            tempWsAccount.setSurname(tempRaceScore.getAccount().getSurname());
+            tempWsAccount.setAdimadim(tempRaceScore.getAccount().getAdimadim());
+            tempWsAccount.setActive(tempRaceScore.getAccount().getActive());
+            tempWsAccount.setAdimadimRun(tempRaceScore.getAccount().getAdimadimRun());
+            tempWsAccount.setBirthDate(dateToXmlGregorianCalendar(tempRaceScore.getAccount().getBirthDate()));
+            tempWsAccount.setChestNumber(tempRaceScore.getAccount().getChestNumber());
+            tempWsAccount.setCreateDate(dateToXmlGregorianCalendar(tempRaceScore.getAccount().getCreateDate()));
+            tempWsAccount.setEmail(tempRaceScore.getAccount().getEmail());
+            tempWsAccount.setGender(tempRaceScore.getAccount().getGender());
+            tempWsAccount.setManager(tempRaceScore.getAccount().getManager());
+            tempWsAccount.setPassword(tempRaceScore.getAccount().getPassword());
+            tempWsAccount.setPhoneNumber(tempRaceScore.getAccount().getPhoneNumber());
+            tempWsAccount.setUserName(tempRaceScore.getAccount().getUserName());*/
+            tempWsRaceScore.setAccountId(tempRaceScore.getAccount().getAccountId());
+            
+            tempWsRaceScore.setDuration(dateToXmlGregorianCalendar(new Date()));
+            
+            wsRaceScoreList.add(tempWsRaceScore);
+        }
+        return wsRaceScoreList;
+    }
+
+    private XMLGregorianCalendar dateToXmlGregorianCalendar(Date date) throws DatatypeConfigurationException {
+        GregorianCalendar c = new GregorianCalendar();
+        c.setTime(date);
+        XMLGregorianCalendar xgc = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+        return xgc;
     }
 
     private Race retrieveRace(Integer raceId) throws Exception {
@@ -716,6 +805,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -737,6 +827,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <system systemId="http://localhost:8080/ClientServiceService/ClientService?wsdl" uri="wsdl/localhost_8080/ClientServiceService/ClientService.wsdl"/>
-    <system systemId="http://localhost:8080/ClientServiceService/ClientService?xsd=1" uri="wsdl/localhost_8080/ClientServiceService/ClientService.xsd_1.xsd"/>
-    <system systemId="http://www.aakosu.org/ClientServiceService/ClientService?wsdl" uri="wsdl/www.aakosu.org/ClientServiceService/ClientService.wsdl"/>
-    <system systemId="http://www.aakosu.org:80/ClientServiceService/ClientService?xsd=1" uri="wsdl/www.aakosu.org_80/ClientServiceService/ClientService.xsd_1.xsd"/>
+    <system systemId="http://www.aakosu.org/ClientExportImportService/ClientExportImport?wsdl" uri="wsdl/www.aakosu.org/ClientExportImportService/ClientExportImport.wsdl"/>
+    <system systemId="http://www.aakosu.org:80/ClientExportImportService/ClientExportImport?xsd=1" uri="wsdl/www.aakosu.org_80/ClientExportImportService/ClientExportImport.xsd_1.xsd"/>
 </catalog>

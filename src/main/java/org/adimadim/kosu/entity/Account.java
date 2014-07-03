@@ -7,15 +7,19 @@ package org.adimadim.kosu.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -25,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(catalog = "adimadim", schema = "")
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 @NamedQueries({
     @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a"),
     @NamedQuery(name = "Account.findByAccountId", query = "SELECT a FROM Account a WHERE a.accountId = :accountId"),
@@ -95,6 +100,8 @@ public class Account implements Serializable {
     private String secretKey;
     @Column(name = "user_name", length = 50)
     private String userName;
+    @OneToMany(mappedBy = "account")
+    private List<RaceScore> raceScoreList;
 
     public Account() {
     }
@@ -239,6 +246,14 @@ public class Account implements Serializable {
         this.userName = userName;
     }
 
+    public List<RaceScore> getRaceScoreList() {
+        return raceScoreList;
+    }
+
+    public void setRaceScoreList(List<RaceScore> raceScoreList) {
+        this.raceScoreList = raceScoreList;
+    }
+    
     @Override
     public String toString() {
         return "org.adimadim.kosu.entity.Account[ accountId=" + accountId + " ]";
