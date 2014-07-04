@@ -7,6 +7,9 @@ package org.adimadim.kosu;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -75,6 +78,10 @@ public class MainForm extends javax.swing.JFrame {
         jPanel7 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
+        jPanel8 = new javax.swing.JPanel();
+        jButton7 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -91,8 +98,6 @@ public class MainForm extends javax.swing.JFrame {
         jTextField6 = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -106,7 +111,9 @@ public class MainForm extends javax.swing.JFrame {
         jPopupMenu1.add(jMenuItem1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1100, 700));
 
+        jPanel1.setMinimumSize(new java.awt.Dimension(800, 59));
         jPanel1.setPreferredSize(new java.awt.Dimension(1000, 600));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
@@ -201,6 +208,57 @@ public class MainForm extends javax.swing.JFrame {
 
         jPanel7.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
+        jPanel8.setPreferredSize(new java.awt.Dimension(639, 50));
+
+        jButton7.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        jButton7.setText("Excel'e aktar");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        jButton6.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
+        jButton6.setText("Yenile");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
+        jButton9.setText("Sil");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(404, Short.MAX_VALUE)
+                .addComponent(jButton9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton6)
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton7)
+                    .addComponent(jButton6)
+                    .addComponent(jButton9))
+                .addContainerGap(13, Short.MAX_VALUE))
+        );
+
+        jPanel7.add(jPanel8, java.awt.BorderLayout.SOUTH);
+
         jPanel5.add(jPanel7, java.awt.BorderLayout.CENTER);
 
         jPanel2.setLayout(new java.awt.BorderLayout());
@@ -272,22 +330,6 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        jButton6.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        jButton6.setText("Yenile");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
-        jButton7.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        jButton7.setText("Excel'e aktar");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -323,13 +365,8 @@ public class MainForm extends javax.swing.JFrame {
                         .addGap(3, 3, 3)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton6)))))
-                .addContainerGap())
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -355,10 +392,8 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         jPanel2.add(jPanel6, java.awt.BorderLayout.CENTER);
@@ -522,6 +557,29 @@ public class MainForm extends javax.swing.JFrame {
         sendRaceScoresToServer();
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        if (JOptionPane.showConfirmDialog(this, "Yarış sonucunu silmek istediğinize emin misiniz?", "Uyarı", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+            return;
+        }
+        if (jTable2.getSelectedRow() < 0) {
+            JOptionPane.showMessageDialog(this, "Lütfen silmek istediğiniz kaydı seçiniz.");
+            return;
+        }
+        try {
+            deleteRaceScore();
+            retrieveRaceScores();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void deleteRaceScore() throws Exception {
+        Integer accountId = Integer.valueOf(jTable2.getValueAt(jTable2.getSelectedRow(), 0).toString());
+        Integer raceId = selectedRace.getRaceId();
+        raceService.deleteRaceScore(accountId, raceId);
+
+    }
+
     private void clearInputs() {
         jTextField1.setText("");
         jTextField2.setText("");
@@ -608,7 +666,7 @@ public class MainForm extends javax.swing.JFrame {
         raceService.saveAccountList(entityAccountList);
         return lastAccountId;
     }
-    
+
     private void saveRaces() throws Exception {
         ClientExportImport port = service.getClientExportImportPort();
         List<org.adimadim.kosu.ws.Race> wsRaceList = port.retrieveRaces();
@@ -628,7 +686,16 @@ public class MainForm extends javax.swing.JFrame {
 
     private void retrieveRaces() throws Exception {
         List<Race> raceList = raceService.retrieveAllRaces();
+        Collections.sort(raceList, new CustomComparator());
         jTable1.setModel(convertRaceListToTableModel(raceList));
+    }
+
+    public class CustomComparator implements Comparator<Race> {
+
+        @Override
+        public int compare(Race o1, Race o2) {
+            return o2.getRaceId().compareTo(o1.getRaceId());
+        }
     }
 
     private void retrieveRaceScores() throws Exception {
@@ -650,34 +717,9 @@ public class MainForm extends javax.swing.JFrame {
 
         for (org.adimadim.kosu.entity.RaceScore tempRaceScore : raceScoreList) {
             org.adimadim.kosu.ws.RaceScoreDto tempWsRaceScore = new org.adimadim.kosu.ws.RaceScoreDto();
-
-            /*org.adimadim.kosu.ws.Race tempWsRace = new org.adimadim.kosu.ws.Race();
-            tempWsRace.setRaceId(tempRaceScore.getRace().getRaceId());
-            tempWsRace.setActive(tempRaceScore.getRace().getActive());
-            tempWsRace.setRaceName(tempRaceScore.getRace().getRaceName());
-            tempWsRace.setRaceDate(dateToXmlGregorianCalendar(tempRaceScore.getRace().getRaceDate()));*/
             tempWsRaceScore.setRaceId(tempRaceScore.getRace().getRaceId());
-            
-            /*org.adimadim.kosu.ws.Account tempWsAccount = new org.adimadim.kosu.ws.Account();
-            tempWsAccount.setAccountId(tempRaceScore.getAccount().getAccountId());
-            tempWsAccount.setName(tempRaceScore.getAccount().getName());
-            tempWsAccount.setSurname(tempRaceScore.getAccount().getSurname());
-            tempWsAccount.setAdimadim(tempRaceScore.getAccount().getAdimadim());
-            tempWsAccount.setActive(tempRaceScore.getAccount().getActive());
-            tempWsAccount.setAdimadimRun(tempRaceScore.getAccount().getAdimadimRun());
-            tempWsAccount.setBirthDate(dateToXmlGregorianCalendar(tempRaceScore.getAccount().getBirthDate()));
-            tempWsAccount.setChestNumber(tempRaceScore.getAccount().getChestNumber());
-            tempWsAccount.setCreateDate(dateToXmlGregorianCalendar(tempRaceScore.getAccount().getCreateDate()));
-            tempWsAccount.setEmail(tempRaceScore.getAccount().getEmail());
-            tempWsAccount.setGender(tempRaceScore.getAccount().getGender());
-            tempWsAccount.setManager(tempRaceScore.getAccount().getManager());
-            tempWsAccount.setPassword(tempRaceScore.getAccount().getPassword());
-            tempWsAccount.setPhoneNumber(tempRaceScore.getAccount().getPhoneNumber());
-            tempWsAccount.setUserName(tempRaceScore.getAccount().getUserName());*/
             tempWsRaceScore.setAccountId(tempRaceScore.getAccount().getAccountId());
-            
             tempWsRaceScore.setDuration(dateToXmlGregorianCalendar(new Date()));
-            
             wsRaceScoreList.add(tempWsRaceScore);
         }
         return wsRaceScoreList;
@@ -806,6 +848,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -822,6 +865,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

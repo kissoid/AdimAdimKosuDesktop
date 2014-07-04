@@ -16,6 +16,7 @@ import org.adimadim.kosu.controller.RaceScoreJpaController;
 import org.adimadim.kosu.entity.Account;
 import org.adimadim.kosu.entity.Race;
 import org.adimadim.kosu.entity.RaceScore;
+import org.adimadim.kosu.entity.RaceScorePK;
 
 /**
  *
@@ -113,4 +114,9 @@ public class RaceService {
         return getRaceJpaController().findRace(raceId);
     }
 
+    public void deleteRaceScore(Integer accountId, Integer raceId) throws Exception{
+        RaceScoreJpaController controller = getRaceScoreJpaController();
+        controller.delete(new RaceScorePK(raceId, accountId));
+    }
+    
 }
