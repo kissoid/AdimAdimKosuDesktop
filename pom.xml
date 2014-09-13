@@ -68,7 +68,7 @@
                             <wsdlFiles>
                                 <wsdlFile>www.aakosu.org/ClientExportImportService/ClientExportImport.wsdl</wsdlFile>
                             </wsdlFiles>
-                            <packageName>org.adimadim.kosu.ws</packageName>
+                            <packageName></packageName>
                             <wsdlLocation>http://www.aakosu.org/ClientExportImportService/ClientExportImport?wsdl</wsdlLocation>
                             <staleFile>${project.build.directory}/jaxws/stale/ClientExportImport.stale</staleFile>
                         </configuration>

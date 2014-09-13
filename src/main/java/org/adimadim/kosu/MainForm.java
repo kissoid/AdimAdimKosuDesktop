@@ -7,7 +7,6 @@ package org.adimadim.kosu;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -24,8 +23,8 @@ import org.adimadim.kosu.entity.Race;
 import org.adimadim.kosu.entity.RaceScore;
 import org.adimadim.kosu.entity.RaceScorePK;
 import org.adimadim.kosu.service.RaceService;
-import org.adimadim.kosu.ws.ClientExportImport;
-import org.adimadim.kosu.ws.ClientExportImportService;
+import org.adimadim.service.ClientExportImport;
+import org.adimadim.service.ClientExportImportService;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -484,7 +483,7 @@ public class MainForm extends javax.swing.JFrame {
             Integer count = 100;
             while (devam) {
                 ClientExportImport port = service.getClientExportImportPort();
-                List<org.adimadim.kosu.ws.Account> wsAccountList = port.retrieveAccounts(startAccountId, count);
+                List<org.adimadim.service.Account> wsAccountList = port.retrieveAccounts(startAccountId, count);
                 if (wsAccountList != null && wsAccountList.size() > 0) {
                     startAccountId = saveAccounts(wsAccountList);
                 } else {
@@ -505,7 +504,7 @@ public class MainForm extends javax.swing.JFrame {
 
         try {
             ClientExportImport port = service.getClientExportImportPort();
-            List<org.adimadim.kosu.ws.RaceScoreDto> wsRaceScores = prepareAndRetrieveRaceScores();
+            List<org.adimadim.service.RaceScoreDto> wsRaceScores = prepareAndRetrieveRaceScores();
             String result = port.saveRaceScores(wsRaceScores);
             JOptionPane.showMessageDialog(this, result, "Hata", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
@@ -640,10 +639,10 @@ public class MainForm extends javax.swing.JFrame {
         retrieveRaceScores();
     }
 
-    private Integer saveAccounts(List<org.adimadim.kosu.ws.Account> wsAccountList) throws Exception {
+    private Integer saveAccounts(List<org.adimadim.service.Account> wsAccountList) throws Exception {
         Integer lastAccountId = 0;
         List<org.adimadim.kosu.entity.Account> entityAccountList = new ArrayList<>();
-        for (org.adimadim.kosu.ws.Account wsAccount : wsAccountList) {
+        for (org.adimadim.service.Account wsAccount : wsAccountList) {
             lastAccountId = wsAccount.getAccountId();
             org.adimadim.kosu.entity.Account entityAccount = new org.adimadim.kosu.entity.Account();
             entityAccount.setAccountId(wsAccount.getAccountId());
@@ -669,9 +668,9 @@ public class MainForm extends javax.swing.JFrame {
 
     private void saveRaces() throws Exception {
         ClientExportImport port = service.getClientExportImportPort();
-        List<org.adimadim.kosu.ws.Race> wsRaceList = port.retrieveRaces();
+        List<org.adimadim.service.Race> wsRaceList = port.retrieveRaces();
         List<org.adimadim.kosu.entity.Race> entityRaceList = new ArrayList<>();
-        for (org.adimadim.kosu.ws.Race wsRace : wsRaceList) {
+        for (org.adimadim.service.Race wsRace : wsRaceList) {
             org.adimadim.kosu.entity.Race entityRace = new org.adimadim.kosu.entity.Race();
             entityRace.setActive(wsRace.getActive());
             entityRace.setRaceDate(wsRace.getRaceDate().toGregorianCalendar().getTime());
@@ -707,19 +706,20 @@ public class MainForm extends javax.swing.JFrame {
         jTable2.setModel(convertRaceScoreListToTableModel(raceScoreList));
     }
 
-    private List<org.adimadim.kosu.ws.RaceScoreDto> prepareAndRetrieveRaceScores() throws Exception {
+    private List<org.adimadim.service.RaceScoreDto> prepareAndRetrieveRaceScores() throws Exception {
         if (selectedRace == null) {
             JOptionPane.showMessageDialog(this, "Lütfen önce bir yarış seçiniz", "Bilgi", JOptionPane.INFORMATION_MESSAGE);
             return null;
         }
         List<org.adimadim.kosu.entity.RaceScore> raceScoreList = raceService.retrieveRaceScoresByRaceId(selectedRace.getRaceId());
-        List<org.adimadim.kosu.ws.RaceScoreDto> wsRaceScoreList = new ArrayList<org.adimadim.kosu.ws.RaceScoreDto>();
+        List<org.adimadim.service.RaceScoreDto> wsRaceScoreList = new ArrayList<org.adimadim.service.RaceScoreDto>();
 
         for (org.adimadim.kosu.entity.RaceScore tempRaceScore : raceScoreList) {
-            org.adimadim.kosu.ws.RaceScoreDto tempWsRaceScore = new org.adimadim.kosu.ws.RaceScoreDto();
+            org.adimadim.service.RaceScoreDto tempWsRaceScore = new org.adimadim.service.RaceScoreDto();
             tempWsRaceScore.setRaceId(tempRaceScore.getRace().getRaceId());
             tempWsRaceScore.setAccountId(tempRaceScore.getAccount().getAccountId());
             tempWsRaceScore.setDuration(dateToXmlGregorianCalendar(new Date()));
+            tempWsRaceScore.setOrderNo(tempRaceScore.getOrderNo());
             wsRaceScoreList.add(tempWsRaceScore);
         }
         return wsRaceScoreList;
