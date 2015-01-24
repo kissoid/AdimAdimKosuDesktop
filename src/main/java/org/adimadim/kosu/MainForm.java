@@ -467,9 +467,10 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
-        if (evt.getKeyCode() == 10) {
-            jTextField2.requestFocus();
+        if (evt.getKeyCode() != 10) {
+            return;
         }
+        jTextField2.requestFocus();
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -513,6 +514,12 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
+        if(jTextField1.getText().trim().toUpperCase().startsWith("S")){
+            JOptionPane.showMessageDialog(this, "Bu alana sıra numarası giremezsiniz.");
+            jTextField1.setText("");
+            jTextField1.requestFocus();
+            return;
+        }
         retrieveAccount();
     }//GEN-LAST:event_jTextField1FocusLost
 
@@ -521,7 +528,18 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        saveRaceScore();
+        if (!jTextField2.getText().trim().toUpperCase().startsWith("S")) {
+            JOptionPane.showMessageDialog(this, "Sıra no alanına sadece sıra numarası girebilirsiniz.");
+            jTextField2.setText("");
+            return;
+        }
+        try {
+            saveRaceScore();
+            retrieveRaceScores();
+            jTextField1.requestFocus();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -533,14 +551,22 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jTextField2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyReleased
-        if (evt.getKeyCode() == 10) {
-            try {
-                saveRaceScore();
-                retrieveRaceScores();
-                jTextField1.requestFocus();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
-            }
+        if (evt.getKeyCode() != 10) {
+            return;
+        }
+
+        if (!jTextField2.getText().trim().toUpperCase().startsWith("S")) {
+            JOptionPane.showMessageDialog(this, "Bu alana sadece sıra numarası girebilirsiniz.");
+            jTextField2.setText("");
+            return;
+        }
+
+        try {
+            saveRaceScore();
+            retrieveRaceScores();
+            jTextField1.requestFocus();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jTextField2KeyReleased
 
