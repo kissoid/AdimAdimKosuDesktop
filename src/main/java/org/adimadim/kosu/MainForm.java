@@ -529,10 +529,11 @@ public class MainForm extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (!jTextField2.getText().trim().toUpperCase().startsWith("S")) {
-            JOptionPane.showMessageDialog(this, "Sıra no alanına sadece sıra numarası girebilirsiniz.");
+            JOptionPane.showMessageDialog(this, "Sıra no alanına sadece sıra numarası girebilirsiniz. " + jTextField2.getText().trim().replaceAll("S", ""));
             jTextField2.setText("");
             return;
         }
+        
         try {
             saveRaceScore();
             retrieveRaceScores();
@@ -560,7 +561,6 @@ public class MainForm extends javax.swing.JFrame {
             jTextField2.setText("");
             return;
         }
-
         try {
             saveRaceScore();
             retrieveRaceScores();
@@ -650,7 +650,7 @@ public class MainForm extends javax.swing.JFrame {
             raceScore.setRaceScorePK(raceScorePk);
             raceScore.setAccount(selectedAccount);
             raceScore.setRace(selectedRace);
-            raceScore.setOrderNo(Integer.valueOf(jTextField2.getText().trim()));
+            raceScore.setOrderNo(Integer.valueOf(jTextField2.getText().trim().toUpperCase().replaceAll("S", "")));
             raceService.saveRaceScore(raceScore);
             clearInputs();
         } catch (Exception ex) {
