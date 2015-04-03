@@ -35,7 +35,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class MainForm extends javax.swing.JFrame {
 
-    private ClientExportImportService service;
+    private ClientExportImportService clientExportImportService;
     private RaceService raceService;
     private Race selectedRace;
     private Account selectedAccount;
@@ -44,11 +44,23 @@ public class MainForm extends javax.swing.JFrame {
      * Creates new form MainForm
      */
     public MainForm() {
-        service = new ClientExportImportService();
-        raceService = new RaceService();
         initComponents();
     }
 
+    private RaceService getRaceService() {
+        if (raceService == null) {
+            raceService = new RaceService();
+        }
+        return raceService;
+    }
+
+    private ClientExportImportService getClientExportImportService() {
+        if (clientExportImportService == null) {
+            clientExportImportService = new ClientExportImportService();
+        }
+        return clientExportImportService;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -483,7 +495,7 @@ public class MainForm extends javax.swing.JFrame {
             Integer startAccountId = 0;
             Integer count = 100;
             while (devam) {
-                ClientExportImport port = service.getClientExportImportPort();
+                ClientExportImport port = getClientExportImportService().getClientExportImportPort();
                 List<org.adimadim.service.Account> wsAccountList = port.retrieveAccounts(startAccountId, count);
                 if (wsAccountList != null && wsAccountList.size() > 0) {
                     startAccountId = saveAccounts(wsAccountList);
@@ -504,7 +516,7 @@ public class MainForm extends javax.swing.JFrame {
         }
 
         try {
-            ClientExportImport port = service.getClientExportImportPort();
+            ClientExportImport port = getClientExportImportService().getClientExportImportPort();
             List<org.adimadim.service.RaceScoreDto> wsRaceScores = prepareAndRetrieveRaceScores();
             String result = port.saveRaceScores(wsRaceScores);
             JOptionPane.showMessageDialog(this, result, "Hata", JOptionPane.ERROR_MESSAGE);
@@ -514,7 +526,7 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
-        if(jTextField1.getText().trim().toUpperCase().startsWith("S")){
+        if (jTextField1.getText().trim().toUpperCase().startsWith("S")) {
             JOptionPane.showMessageDialog(this, "Bu alana sıra numarası giremezsiniz.");
             jTextField1.setText("");
             jTextField1.requestFocus();
@@ -533,7 +545,7 @@ public class MainForm extends javax.swing.JFrame {
             jTextField2.setText("");
             return;
         }
-        
+
         try {
             saveRaceScore();
             retrieveRaceScores();
@@ -601,7 +613,7 @@ public class MainForm extends javax.swing.JFrame {
     private void deleteRaceScore() throws Exception {
         Integer accountId = Integer.valueOf(jTable2.getValueAt(jTable2.getSelectedRow(), 0).toString());
         Integer raceId = selectedRace.getRaceId();
-        raceService.deleteRaceScore(accountId, raceId);
+        getRaceService().deleteRaceScore(accountId, raceId);
 
     }
 
@@ -620,7 +632,7 @@ public class MainForm extends javax.swing.JFrame {
                 return;
             }
             Integer chestNumber = Integer.valueOf(jTextField1.getText().trim());
-            Account account = raceService.retrieveAccountByChestNumber(chestNumber);
+            Account account = getRaceService().retrieveAccountByChestNumber(chestNumber);
             jTextField6.setText(account.getChestNumber().toString());
             jTextField3.setText(account.getName());
             jTextField4.setText(account.getSurname());
@@ -651,7 +663,7 @@ public class MainForm extends javax.swing.JFrame {
             raceScore.setAccount(selectedAccount);
             raceScore.setRace(selectedRace);
             raceScore.setOrderNo(Integer.valueOf(jTextField2.getText().trim().toUpperCase().replaceAll("S", "")));
-            raceService.saveRaceScore(raceScore);
+            getRaceService().saveRaceScore(raceScore);
             clearInputs();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
@@ -688,12 +700,12 @@ public class MainForm extends javax.swing.JFrame {
             entityAccount.setUserName(wsAccount.getUserName());
             entityAccountList.add(entityAccount);
         }
-        raceService.saveAccountList(entityAccountList);
+        getRaceService().saveAccountList(entityAccountList);
         return lastAccountId;
     }
 
     private void saveRaces() throws Exception {
-        ClientExportImport port = service.getClientExportImportPort();
+        ClientExportImport port = getClientExportImportService().getClientExportImportPort();
         List<org.adimadim.service.Race> wsRaceList = port.retrieveRaces();
         List<org.adimadim.kosu.entity.Race> entityRaceList = new ArrayList<>();
         for (org.adimadim.service.Race wsRace : wsRaceList) {
@@ -705,12 +717,12 @@ public class MainForm extends javax.swing.JFrame {
             entityRace.setRaceScoreList(new ArrayList<RaceScore>());
             entityRaceList.add(entityRace);
         }
-        raceService.saveRaceList(entityRaceList);
+        getRaceService().saveRaceList(entityRaceList);
         JOptionPane.showMessageDialog(this, "İşlem tamamlandı. " + entityRaceList.size() + " kayıt yüklendi", "Hata", JOptionPane.ERROR_MESSAGE);
     }
 
     private void retrieveRaces() throws Exception {
-        List<Race> raceList = raceService.retrieveAllRaces();
+        List<Race> raceList = getRaceService().retrieveAllRaces();
         Collections.sort(raceList, new CustomComparator());
         jTable1.setModel(convertRaceListToTableModel(raceList));
     }
@@ -728,7 +740,7 @@ public class MainForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Lütfen önce bir yarış seçiniz", "Bilgi", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        List<RaceScore> raceScoreList = raceService.retrieveRaceScoresByRaceId(selectedRace.getRaceId());
+        List<RaceScore> raceScoreList = getRaceService().retrieveRaceScoresByRaceId(selectedRace.getRaceId());
         jTable2.setModel(convertRaceScoreListToTableModel(raceScoreList));
     }
 
@@ -737,7 +749,7 @@ public class MainForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Lütfen önce bir yarış seçiniz", "Bilgi", JOptionPane.INFORMATION_MESSAGE);
             return null;
         }
-        List<org.adimadim.kosu.entity.RaceScore> raceScoreList = raceService.retrieveRaceScoresByRaceId(selectedRace.getRaceId());
+        List<org.adimadim.kosu.entity.RaceScore> raceScoreList = getRaceService().retrieveRaceScoresByRaceId(selectedRace.getRaceId());
         List<org.adimadim.service.RaceScoreDto> wsRaceScoreList = new ArrayList<org.adimadim.service.RaceScoreDto>();
 
         for (org.adimadim.kosu.entity.RaceScore tempRaceScore : raceScoreList) {
@@ -759,7 +771,7 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     private Race retrieveRace(Integer raceId) throws Exception {
-        return selectedRace = raceService.retrieveRace(raceId);
+        return selectedRace = getRaceService().retrieveRace(raceId);
     }
 
     private TableModel convertRaceListToTableModel(List<Race> raceList) {
@@ -783,7 +795,7 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     private void exportToExcel() throws Exception {
-        List<RaceScore> raceScoreList = raceService.retrieveRaceScoresByRaceId(selectedRace.getRaceId());
+        List<RaceScore> raceScoreList = getRaceService().retrieveRaceScoresByRaceId(selectedRace.getRaceId());
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Sonuclar");
         XSSFRow row = sheet.createRow(0);
