@@ -541,7 +541,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (!jTextField2.getText().trim().toUpperCase().startsWith("S")) {
-            JOptionPane.showMessageDialog(this, "Sıra no alanına sadece sıra numarası girebilirsiniz. " + jTextField2.getText().trim().replaceAll("S", ""));
+            JOptionPane.showMessageDialog(this, "Sıra no alanına sadece sıra numarası girebilirsiniz. ");
             jTextField2.setText("");
             return;
         }
@@ -662,12 +662,22 @@ public class MainForm extends javax.swing.JFrame {
             raceScore.setRaceScorePK(raceScorePk);
             raceScore.setAccount(selectedAccount);
             raceScore.setRace(selectedRace);
-            raceScore.setOrderNo(Integer.valueOf(jTextField2.getText().trim().toUpperCase().replaceAll("S", "")));
+            raceScore.setOrderNo(Integer.valueOf(removeChars(jTextField2.getText().trim())));
             getRaceService().saveRaceScore(raceScore);
             clearInputs();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private String removeChars(String str){
+        String tempString = "";
+        for (int index = 0; index < str.length(); index++) {
+            if (Character.isDigit(str.charAt(index))) {
+                tempString += str.charAt(index);
+            }
+        }
+        return tempString;
     }
 
     private void changeSelectedRace(Race race) throws Exception {
