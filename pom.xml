@@ -10,7 +10,6 @@
     <name>AdimAdimKosu</name>
     <url>http://maven.apache.org</url>
     <build>
-        <finalName>AdimAdimKosu</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
