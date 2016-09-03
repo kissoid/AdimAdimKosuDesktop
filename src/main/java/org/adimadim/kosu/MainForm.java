@@ -171,6 +171,7 @@ public class MainForm extends javax.swing.JFrame {
         jToolBar1.add(jSeparator3);
 
         jButton8.setText("Yarış Sonuçlarını Sunucuya Gönder");
+        jButton8.setEnabled(false);
         jButton8.setFocusable(false);
         jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -265,7 +266,7 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(jButton7)
                     .addComponent(jButton6)
                     .addComponent(jButton9))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel7.add(jPanel8, java.awt.BorderLayout.SOUTH);
@@ -404,7 +405,7 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.add(jPanel6, java.awt.BorderLayout.CENTER);
